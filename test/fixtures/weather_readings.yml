@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  station_id: MyString
+  lat: 
+  long: 
+  rainfall: 
+  temperature: 
+  dew_point: 
+  wind_direction: MyString
+  wind_speed: 
+  date: MyString
+  time: MyString
+  source: MyString
+
+two:
+  station_id: MyString
+  lat: 
+  long: 
+  rainfall: 
+  temperature: 
+  dew_point: 
+  wind_direction: MyString
+  wind_speed: 
+  date: MyString
+  time: MyString
+  source: MyString

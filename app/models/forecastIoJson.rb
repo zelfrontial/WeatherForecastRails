@@ -3,9 +3,9 @@
 require 'nokogiri'
 require 'open-uri'
 require 'json'
+require 'date'
 
 API_KEY = '9ec4600f0f75d514758d614600522388'
-LAT_LONG ='37.8267,-122.423'
 BASE_URL = 'https://api.forecast.io/forecast'
 # forecast = JSON.parse(open("#{BASE_URL}/#{API_KEY}/#{LAT_LONG}").read)
 
@@ -99,8 +99,20 @@ forecast = {"latitude"=>37.8267, "longitude"=>-122.423,
 # Wind Direction (if present) 
 # Wind Speed (in km/h if present)
 #forecast = JSON.parse(forecast)
-
 #temperature: Degrees Celsius.
+
+def current_date(f)
+	unix_date = f["currently"]["time"]
+	date = DateTime.strptime("#{unix_date}",'%s')
+	return date.strftime("%Y %m %d")
+end
+
+def current_time(f)
+	unix_time = f["currently"]["time"]
+	time = DateTime.strptime("#{unix_time}",'%s')
+	return time.strftime("%I:%M %p")
+end
+
 def current_temperature(f)
 	return f["currently"]["temperature"]
 end
@@ -109,6 +121,7 @@ def current_dew_point(f)
 	return f["currently"]["dewpoint"]
 end
 
+#should return bearings instead of degree
 def current_wind_direction(f)
 	return f["currently"]["windBearing"]
 end
@@ -121,4 +134,33 @@ end
 def current_rainfall(f)
 	return f["currently"]["precipIntensity"]
 end
-puts current_temperature(forecast)
+LAT_LONG ='37.8267,-122.423'
+
+def weather_reading(lat,long,station_id)
+	lat_long = str(lat) + ',' + str(long)
+	#forecast = JSON.parse(open("#{BASE_URL}/#{API_KEY}/#{LAT_LONG}").read)
+	reading = Hash.new
+	reading[:station_id] = station_id
+	reading[:lat] = lat
+	reading[:long] = long
+	reading[:date] = current_date(forecast)
+	reading[:time] = current_time(forecast)
+	reading[:temperature] = current_temperature(forecast)
+	reading[:dew_point] = current_dew_point(forecast)
+	reading[:wind_direction] = current_wind_direction(forecast)
+	reading[:wind_speed] = current_wind_speed(forecast)
+	reading[:rainfall] = current_rainfall(forecast)
+
+	return reading
+
+end
+
+r = WeatherReading.build_reading(station_id,lat,long,current_date(forecast),current_time(forecast),current_temperature(forecast),current_dew_point(forecast),
+	current_wind_direction(forecast),current_wind_speed(forecast),current_rainfall(forecast))
+
+#r.save
+
+#need to improve time
+puts current_time(forecast)
+
+#rails runner app/models/bomScraper.rb 

@@ -1,22 +1,25 @@
 require 'nokogiri'
 require 'open-uri'
+require 'date'
 URL = 'http://www.bom.gov.au/vic/observations/melbourne.shtml'
 
-#gets all the table element
-#puts table.css('td')
-#gets the station name
-def station_name_arr(t)
-	return t.css('th').map{|x| x['id']}
+def current_time()
+	l_string = doc.css('p')[1].text.split()
+	time = l_string[2] + " "
+	time += l_string[3]
+	time = DateTime.strptime("#{time}",'%l:%M %P')
+	return time.strftime("%I:%M %p")
 end
-#puts table.css('th')[0]['id']
 
+def current_date(t)
+	l_string = t.css('p')[1].text.split()
+	date = l_string[6] + " "
+	date += l_string[7] + " "
+	date += l_string[8]
+	date = DateTime.strptime("#{date}",'%e %B %Y')
+	return date.strftime("%Y-%m-%d")
+end
 
-# Rainfall Amount (in mm) 
-# Current Temperature
-# Dew Point
-# Wind Direction (if present) 
-# Wind Speed (in km/h if present)
-###page.css("li[data-category='news']")
 def current_temperature(t,location)
 	tag = 'obs-apptemp '
 	tag += location
@@ -47,11 +50,24 @@ def wind_speed(t,location)
 	return t.css("td[headers = '#{tag}']").text
 end
 
-def weather_data()
+def save_reading()
 	
 	doc = Nokogiri::HTML(open(URL))
 	table = doc.at('tbody')
-	list_station = station_name_arr(table)
-	return list_staion.map{|x| }
+
+	Station.all.each do |x|
+		station_id = x.station_id
+		lat = x.lat
+		long = x.long
+		#puts table,x
+		r = WeatherReading.new
+		r.build_reading(station_id,lat,long,current_date(table,x),current_time(table,x),current_temperature(table,x),current_dew_point(table,x),
+			current_wind_direction(table,x),current_wind_speed(table,x),current_rainfall(table,x),"BOM")
+		#r.save
+		puts r
+	end
+
 end
+
+save_reading()
 #puts current_temperature(table,'obs-station-melbourne-olympic-park')

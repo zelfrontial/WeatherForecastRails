@@ -25,6 +25,11 @@ class WeatherReading < ActiveRecord::Base
 		w.wind_speed = wind_speed
 		w.rainfall = rainfall
 		w.source = source
+		return w
+	end
+
+	def yolo()
+		puts "yoloswag"
 	end
 
 end

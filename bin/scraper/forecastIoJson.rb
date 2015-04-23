@@ -6,7 +6,7 @@ require 'json'
 require 'date'
 
 API_KEY = '9ec4600f0f75d514758d614600522388'
-BASE_URL = 'https://api.forecast.io/forecast'
+
 # forecast = JSON.parse(open("#{BASE_URL}/#{API_KEY}/#{LAT_LONG}").read)
 
 
@@ -134,33 +134,26 @@ end
 def current_rainfall(f)
 	return f["currently"]["precipIntensity"]
 end
-LAT_LONG ='37.8267,-122.423'
 
-def weather_reading(lat,long,station_id)
-	lat_long = str(lat) + ',' + str(long)
-	#forecast = JSON.parse(open("#{BASE_URL}/#{API_KEY}/#{LAT_LONG}").read)
-	reading = Hash.new
-	reading[:station_id] = station_id
-	reading[:lat] = lat
-	reading[:long] = long
-	reading[:date] = current_date(forecast)
-	reading[:time] = current_time(forecast)
-	reading[:temperature] = current_temperature(forecast)
-	reading[:dew_point] = current_dew_point(forecast)
-	reading[:wind_direction] = current_wind_direction(forecast)
-	reading[:wind_speed] = current_wind_speed(forecast)
-	reading[:rainfall] = current_rainfall(forecast)
+	LAT_LONG ='37.8267,-122.423'
+	BASE_URL = 'https://api.forecast.io/forecast'
+def save_reading()
+	#lat_long = str(lat) + ',' + str(long)
 
-	return reading
+	forecast = JSON.parse(open("#{BASE_URL}/#{API_KEY}/#{LAT_LONG}").read)
+	station_id = "yolo"
+	lat = 32.3
+	long = 34.5
 
+	#r = WeatherReading.build_reading(station_id,lat,long,current_date(forecast),current_time(forecast),current_temperature(forecast),current_dew_point(forecast),
+	#	current_wind_direction(forecast),current_wind_speed(forecast),current_rainfall(forecast),"forecast.io")
+	
+	#r.save	
+	puts WeatherReading.yolo
 end
 
-r = WeatherReading.build_reading(station_id,lat,long,current_date(forecast),current_time(forecast),current_temperature(forecast),current_dew_point(forecast),
-	current_wind_direction(forecast),current_wind_speed(forecast),current_rainfall(forecast))
-
-#r.save
-
+save_reading()
 #need to improve time
-puts current_time(forecast)
+#puts current_time(forecast)
 
 #rails runner app/models/bomScraper.rb 

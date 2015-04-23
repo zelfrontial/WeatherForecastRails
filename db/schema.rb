@@ -11,7 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150423003923) do
+ActiveRecord::Schema.define(version: 20150423010431) do
+
+  create_table "stations", force: :cascade do |t|
+    t.string   "station_id"
+    t.float    "lat"
+    t.float    "long"
+    t.integer  "post_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "weather_readings", force: :cascade do |t|
     t.string   "station_id"

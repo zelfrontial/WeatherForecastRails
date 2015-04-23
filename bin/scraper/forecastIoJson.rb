@@ -144,12 +144,12 @@ def save_reading()
 	station_id = "yolo"
 	lat = 32.3
 	long = 34.5
-
-	#r = WeatherReading.build_reading(station_id,lat,long,current_date(forecast),current_time(forecast),current_temperature(forecast),current_dew_point(forecast),
-	#	current_wind_direction(forecast),current_wind_speed(forecast),current_rainfall(forecast),"forecast.io")
+	r = WeatherReading.new
+	r = r.build_reading(station_id,lat,long,current_date(forecast),current_time(forecast),current_temperature(forecast),current_dew_point(forecast),
+		current_wind_direction(forecast),current_wind_speed(forecast),current_rainfall(forecast),"forecast.io")
 	
-	#r.save	
-	puts WeatherReading.yolo
+	puts r.station_id
+
 end
 
 save_reading()

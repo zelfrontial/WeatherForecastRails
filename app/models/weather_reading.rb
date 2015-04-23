@@ -13,6 +13,6 @@ class WeatherReading < ActiveRecord::Base
 		self.wind_speed = wind_speed
 		self.rainfall = rainfall
 		self.source = source
-		#w.save
+		#saving done in parse maybe change it to here
 	end
 end

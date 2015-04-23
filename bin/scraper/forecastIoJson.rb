@@ -16,7 +16,7 @@ BASE_URL = 'https://api.forecast.io/forecast'
 def current_date(f)
 	unix_date = f["currently"]["time"]
 	date = DateTime.strptime("#{unix_date}",'%s')
-	return date.strftime("%Y %m %d")
+	return date.strftime("%Y-%m-%d")
 end
 
 def current_time(f)
@@ -30,7 +30,7 @@ def current_temperature(f)
 end
 
 def current_dew_point(f)
-	return f["currently"]["dewpoint"]
+	return f["currently"]["dewPoint"]
 end
 
 #should return bearings instead of degree
@@ -55,7 +55,6 @@ def save_reading()
 		long = x.long
 		lat_long = "#{lat},#{long}"
 		forecast = JSON.parse(open("#{BASE_URL}/#{API_KEY}/#{lat_long}").read)
-		#puts forecast
 		r = WeatherReading.new
 		r.build_reading(station_id,lat,long,current_date(forecast),current_time(forecast),current_temperature(forecast),current_dew_point(forecast),
 			current_wind_direction(forecast),current_wind_speed(forecast),current_rainfall(forecast),"forecast.io")

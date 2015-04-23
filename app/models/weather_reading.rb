@@ -1,16 +1,4 @@
 class WeatherReading < ActiveRecord::Base
-
-   # t.string :station_id
-   #    t.double :lat
-   #    t.double :long
-   #    t.double :rainfall
-   #    t.double :temperature
-   #    t.double :dew_point
-   #    t.string :wind_direction
-   #    t.double :wind_speed
-   #    t.string :date
-   #    t.string :time
-   #    t.string :source
 	def build_reading(station_id,lat,long,date,time,temperature,dew_point,
 		wind_direction,wind_speed,rainfall,source)
 		w = WeatherReading.new
@@ -27,9 +15,4 @@ class WeatherReading < ActiveRecord::Base
 		w.source = source
 		return w
 	end
-
-	def yolo()
-		puts "yoloswag"
-	end
-
 end

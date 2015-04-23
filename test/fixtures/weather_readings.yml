@@ -2,26 +2,26 @@
 
 one:
   station_id: MyString
-  lat: 
-  long: 
-  rainfall: 
-  temperature: 
-  dew_point: 
+  lat: 1.5
+  long: 1.5
+  rainfall: 1.5
+  temperature: 1.5
+  dew_point: 1.5
   wind_direction: MyString
-  wind_speed: 
+  wind_speed: 1.5
   date: MyString
   time: MyString
   source: MyString
 
 two:
   station_id: MyString
-  lat: 
-  long: 
-  rainfall: 
-  temperature: 
-  dew_point: 
+  lat: 1.5
+  long: 1.5
+  rainfall: 1.5
+  temperature: 1.5
+  dew_point: 1.5
   wind_direction: MyString
-  wind_speed: 
+  wind_speed: 1.5
   date: MyString
   time: MyString
   source: MyString

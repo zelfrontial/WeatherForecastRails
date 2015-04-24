@@ -16,6 +16,7 @@ gem 'coffee-rails', '~> 4.1.0'
 
 
 gem "nokogiri", '1.6.6.2', :require => "nokogiri"
+gem 'whenever', :require => false
 
 
 # Use jquery as the JavaScript library

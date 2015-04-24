@@ -107,7 +107,6 @@ def save_reading()
 	
 	doc = Nokogiri::HTML(open(URL))
 	table = doc.at('tbody')
-
 	Station.all.each do |x|
 		station_id = "obs-station-#{x.station_id}"
 		lat = x.lat
@@ -115,6 +114,7 @@ def save_reading()
 		r = WeatherReading.new
 		r.build_reading(x.station_id,lat,long,current_date(doc),current_time(doc),current_temperature(table,station_id),current_dew_point(table,station_id),
 		 	current_wind_direction(table,station_id),current_wind_speed(table,station_id),current_rainfall(table,station_id),"BOM")
+
 		r.save
 
 	end

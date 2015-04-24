@@ -1,4 +1,7 @@
 # webScraper
+Student Id = 613726 
+Login Id = dthamrin
+
 bundle install
 rake db:create
 rake db:migrate

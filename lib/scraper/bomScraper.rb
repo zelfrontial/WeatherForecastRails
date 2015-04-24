@@ -102,45 +102,21 @@ def mph_to_kmh(speed)
 	return Float(speed)*1.609344
 end
 
-
+#Persist Reading to database
 def save_reading()
 	
 	doc = Nokogiri::HTML(open(URL))
 	table = doc.at('tbody')
-
 	Station.all.each do |x|
 		station_id = "obs-station-#{x.station_id}"
 		lat = x.lat
 		long = x.long
-
-		#puts table,x
-		# puts x.station_id
-		# puts lat
-		# puts long
-		# puts current_rainfall(table,station_id)
-		# puts current_temperature(table,station_id)
-		# puts current_dew_point(table,station_id)
-		# puts current_wind_direction(table,station_id)
-		# puts current_wind_speed(table,station_id)
-		# puts current_date(doc)
-		# puts current_time(doc)
-
-
 		r = WeatherReading.new
 		r.build_reading(x.station_id,lat,long,current_date(doc),current_time(doc),current_temperature(table,station_id),current_dew_point(table,station_id),
 		 	current_wind_direction(table,station_id),current_wind_speed(table,station_id),current_rainfall(table,station_id),"BOM")
-		# #r.save
-		puts r.station_id
-		puts r.lat
-		puts r.long
-		puts r.rainfall
-		puts r.temperature
-		puts r.dew_point
-		puts r.wind_direction
-		puts r.wind_speed
-		puts r.date
-		puts r.time
-		puts r.source
+
+		r.save
+
 	end
 
 end

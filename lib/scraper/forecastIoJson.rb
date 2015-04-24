@@ -5,14 +5,6 @@ require 'date'
 API_KEY = '9ec4600f0f75d514758d614600522388'
 BASE_URL = 'https://api.forecast.io/forecast'
 
-# Rainfall Amount (in mm) 
-# Current Temperature
-# Dew Point
-# Wind Direction (if present) 
-# Wind Speed (in km/h if present)
-#forecast = JSON.parse(forecast)
-#temperature: Degrees Celsius.
-
 def current_date(f)
 	unix_date = f["currently"]["time"]
 	date = DateTime.strptime("#{unix_date}",'%s')
@@ -39,7 +31,7 @@ def current_dew_point(f)
 	return to_celcius(f["currently"]["dewPoint"])
 end
 
-#should return bearings instead of degree
+#Return bearings instead of degree
 def current_wind_direction(f)
 	return degToCompass(Integer(f["currently"]["windBearing"]))
 end
@@ -73,7 +65,7 @@ def time_since_9_am(time)
 	time_elapsed =  time_elapsed
 	hour_passed = Float(time_elapsed*24)
 	if (hour_passed < 0 )
-		return hour_passed + 12
+		return hour_passed + 24
 	else
 		return hour_passed
 	end
@@ -90,21 +82,8 @@ def save_reading()
 		r = WeatherReading.new
 		r.build_reading(station_id,lat,long,current_date(forecast),current_time(forecast),current_temperature(forecast),current_dew_point(forecast),
 			current_wind_direction(forecast),current_wind_speed(forecast),current_rainfall(forecast),"forecast.io")
-		#r.save
-		puts r.station_id
-		puts r.lat
-		puts r.long
-		puts r.rainfall
-		puts r.temperature
-		puts r.dew_point
-		puts r.wind_direction
-		puts r.wind_speed
-		puts r.date
-		puts r.time
-		puts r.source
+		r.save
 	end
 
 end
-#rails runner bin/scraper/forecastIoJson.rb 
-
 save_reading()

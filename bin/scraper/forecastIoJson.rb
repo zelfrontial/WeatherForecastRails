@@ -25,17 +25,30 @@ def current_time(f)
 	return time.strftime("%I:%M %p")
 end
 
+#API returns fahrenheit ,we convert it to celcius
 def current_temperature(f)
-	return f["currently"]["temperature"]
+	return to_celcius(f["currently"]["temperature"])
+end
+
+# Fahrenheit to Celcius
+def to_celcius(fahrenheit)
+	return (fahrenheit-32)/1.8
 end
 
 def current_dew_point(f)
-	return f["currently"]["dewPoint"]
+	return to_celcius(f["currently"]["dewPoint"])
 end
 
 #should return bearings instead of degree
 def current_wind_direction(f)
-	return f["currently"]["windBearing"]
+	return degToCompass(Integer(f["currently"]["windBearing"]))
+end
+
+#Adepted from http://stackoverflow.com/questions/7490660/converting-wind-direction-in-angles-to-text-words
+def degToCompass(num)
+    val=Integer((num/22.5)+0.5)
+    arr=["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
+    return arr[(val % 16)]
 end
 
 #windSpeed: Meters per second.
@@ -43,8 +56,27 @@ def current_wind_speed(f)
 	return f["currently"]["windSpeed"]
 end
 
+#Convert to rainfall since 9 am
 def current_rainfall(f)
-	return f["currently"]["precipIntensity"]
+
+	rainfall_per_hour = f["currently"]["precipIntensity"]
+
+	time_since_9 = time_since_9_am(current_time(f))
+	return (rainfall_per_hour * time_since_9)
+end
+
+def time_since_9_am(time)
+	time = DateTime.strptime(time,"%I:%M %p")
+	nine_am = "09:00 AM"
+	nine_am =  DateTime.strptime(nine_am,"%I:%M %p")
+	time_elapsed = time - nine_am
+	time_elapsed =  time_elapsed
+	hour_passed = Float(time_elapsed*24)
+	if (hour_passed < 0 )
+		return hour_passed + 12
+	else
+		return hour_passed
+	end
 end
 
 # Persist Reading to database
@@ -59,6 +91,17 @@ def save_reading()
 		r.build_reading(station_id,lat,long,current_date(forecast),current_time(forecast),current_temperature(forecast),current_dew_point(forecast),
 			current_wind_direction(forecast),current_wind_speed(forecast),current_rainfall(forecast),"forecast.io")
 		#r.save
+		puts r.station_id
+		puts r.lat
+		puts r.long
+		puts r.rainfall
+		puts r.temperature
+		puts r.dew_point
+		puts r.wind_direction
+		puts r.wind_speed
+		puts r.date
+		puts r.time
+		puts r.source
 	end
 
 end

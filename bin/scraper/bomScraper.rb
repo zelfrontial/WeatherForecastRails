@@ -3,12 +3,18 @@ require 'open-uri'
 require 'date'
 URL = 'http://www.bom.gov.au/vic/observations/melbourne.shtml'
 
-def current_time()
-	l_string = doc.css('p')[1].text.split()
+def current_time(t)
+
+	l_string = t.css('p')[1].text.split()
 	time = l_string[2] + " "
 	time += l_string[3]
 	time = DateTime.strptime("#{time}",'%l:%M %P')
-	return time.strftime("%I:%M %p")
+	time =  time.strftime("%I:%M %p")
+	if time == "-"
+		return nil
+	else 
+		return time
+	end
 end
 
 def current_date(t)
@@ -17,38 +23,85 @@ def current_date(t)
 	date += l_string[7] + " "
 	date += l_string[8]
 	date = DateTime.strptime("#{date}",'%e %B %Y')
-	return date.strftime("%Y-%m-%d")
+	date = date.strftime("%Y-%m-%d")
+	if date == "-"
+		return nil
+	else 
+		return date
+	end	
 end
 
 def current_temperature(t,location)
 	tag = 'obs-apptemp '
 	tag += location
-	return t.css("td[headers = '#{tag}']").text
+	tag = t.css("td[headers = '#{tag}']").text
+	if tag == "-"
+		return nil
+	else 
+		return tag
+	end
 end
 
-def rainfall_ammount(t,location)
+def current_temperature(t,location)
+	tag = 'obs-apptemp '
+	tag += location
+	tag = t.css("td[headers = '#{tag}']").text
+	if tag == "-"
+		return nil
+	else 
+		return tag
+	end	
+end
+
+def current_rainfall(t,location)
 	tag = 'obs-rainsince9am '
 	tag += location
-	return t.css("td[headers = '#{tag}']").text
+	tag =  t.css("td[headers = '#{tag}']").text
+	if tag == "-" || tag == "Trace"
+		return nil
+	else 
+		return tag
+	end
 end
 
-def dew_point(t,location)
+def current_dew_point(t,location)
 	tag = 'obs-dewpoint '
 	tag += location
-	return t.css("td[headers = '#{tag}']").text
+	tag = t.css("td[headers = '#{tag}']").text
+	if tag == "-"
+		return nil
+	else 
+		return tag
+	end
 end
 
-def wind_direction(t,location)
+def current_wind_direction(t,location)
 	tag = 'obs-wind obs-wind-dir '
 	tag += location
-	return t.css("td[headers = '#{tag}']").text
+	tag = t.css("td[headers = '#{tag}']").text
+	if tag == "CALM"
+		return nil
+	else
+		return tag
+	end
 end
 
-def wind_speed(t,location)
+#convert to km per hour
+def current_wind_speed(t,location)
 	tag = 'obs-wind obs-wind-spd-kph '
 	tag += location
-	return t.css("td[headers = '#{tag}']").text
+	tag = t.css("td[headers = '#{tag}']").text
+	if tag == "-"
+		return nil
+	else 
+		return mph_to_kmh(tag)
+	end
 end
+
+def mph_to_kmh(speed)
+	return Float(speed)*1.609344
+end
+
 
 def save_reading()
 	
@@ -56,15 +109,38 @@ def save_reading()
 	table = doc.at('tbody')
 
 	Station.all.each do |x|
-		station_id = x.station_id
+		station_id = "obs-station-#{x.station_id}"
 		lat = x.lat
 		long = x.long
+
 		#puts table,x
+		# puts x.station_id
+		# puts lat
+		# puts long
+		# puts current_rainfall(table,station_id)
+		# puts current_temperature(table,station_id)
+		# puts current_dew_point(table,station_id)
+		# puts current_wind_direction(table,station_id)
+		# puts current_wind_speed(table,station_id)
+		# puts current_date(doc)
+		# puts current_time(doc)
+
+
 		r = WeatherReading.new
-		r.build_reading(station_id,lat,long,current_date(table,x),current_time(table,x),current_temperature(table,x),current_dew_point(table,x),
-			current_wind_direction(table,x),current_wind_speed(table,x),current_rainfall(table,x),"BOM")
-		#r.save
-		puts r
+		r.build_reading(x.station_id,lat,long,current_date(doc),current_time(doc),current_temperature(table,station_id),current_dew_point(table,station_id),
+		 	current_wind_direction(table,station_id),current_wind_speed(table,station_id),current_rainfall(table,station_id),"BOM")
+		# #r.save
+		puts r.station_id
+		puts r.lat
+		puts r.long
+		puts r.rainfall
+		puts r.temperature
+		puts r.dew_point
+		puts r.wind_direction
+		puts r.wind_speed
+		puts r.date
+		puts r.time
+		puts r.source
 	end
 
 end
